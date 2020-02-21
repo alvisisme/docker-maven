@@ -10,10 +10,12 @@ branches:
     - master
 
 env:
-  - SERVER=docker.io USER=$DOCKER_USERNAME PASSWORD=$DOCKER_PASSWORD
-  - SERVER=registry.cn-hangzhou.aliyuncs.com USER=$ALIYUN_USERNAME PASSWORD=$ALIYUN_PASSWORD
+  - MAVEN_VERSION=3.6.3
 
 script:
-  - docker build --pull -t $SERVER/alvisisme/maven:3.6.3 .
-  - echo "$PASSWORD" | docker login -u "$USER" --password-stdin $SERVER
-  - docker push $SERVER/alvisisme/maven:3.6.3
+  - docker build --pull -t alvisisme/maven:$MAVEN_VERSION .
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push alvisisme/maven:$MAVEN_VERSION
+  - docker tag alvisisme/maven:$MAVEN_VERSION registry.cn-hangzhou.aliyuncs.com/alvisisme/maven:$MAVEN_VERSION
+  - echo "$ALIYUN_PASSWORD" | docker login -u "$ALIYUN_USERNAME" --password-stdin registry.cn-hangzhou.aliyuncs.com
+  - docker push registry.cn-hangzhou.aliyuncs.com/alvisisme/maven:$MAVEN_VERSION
